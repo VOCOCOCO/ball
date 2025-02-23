@@ -1,19 +1,291 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оплата Stars</title>
+    <title>Игра с теннисным мячиком</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .game-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        canvas {
+            border: 2px solid #fff;
+        }
+
+        .game-over-message {
+            font-size: 30px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            display: none;
+            margin-top: 20px;
+        }
+
+        .restart-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff0;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            display: none;
+        }
+
+        .restart-button:hover {
+            background-color: #ffaa00;
+        }
+
+        .blurred {
+            filter: blur(2px);
+        }
+
+        .star-counter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+    </style>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <button id="pay">Оплатить 50 XTR</button>
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+        <div class="game-over-message" id="gameOverMessage">Вы проиграли!</div>
+        <button class="restart-button" id="restartButton">Перезапустить игру</button>
+        <div class="star-counter" id="starCounter">Звезды: 0</div>
+        <audio id="bounceSound" src="tap-notification-180637.mp3" preload="auto"></audio>
+        <audio id="wallSound" src="tap-notification-180637.mp3" preload="auto"></audio>
+    </div>
 
     <script>
-        document.getElementById("pay").addEventListener("click", function () {
-            const tg = window.Telegram.WebApp;
-            tg.sendData(JSON.stringify({ amount: 50 })); // Отправка данных в бота
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gameOverMessage = document.getElementById('gameOverMessage');
+        const restartButton = document.getElementById('restartButton');
+        const bounceSound = document.getElementById('bounceSound');
+        const wallSound = document.getElementById('wallSound');
+        const starCounter = document.getElementById('starCounter');
+
+        canvas.width = 800;
+        canvas.height = 600;
+
+        let paddleWidth = 120, paddleHeight = 20, paddleX = (canvas.width - paddleWidth) / 2;
+        let ballRadius = 10, ballX = canvas.width / 2, ballY = canvas.height - 30;
+        let ballDX = 4, ballDY = -4;
+        let rightPressed = false, leftPressed = false;
+        let isGameOver = false;
+
+        let stars = [];
+        let maxStars = 5;
+        let totalStarsCollected = 0;
+
+        function loadGameState() {
+            const savedStars = localStorage.getItem('stars');
+            const savedStarsCollected = localStorage.getItem('totalStarsCollected');
+            if (savedStars && savedStarsCollected !== null) {
+                stars = JSON.parse(savedStars);
+                totalStarsCollected = parseInt(savedStarsCollected);
+                starCounter.textContent = `Звезды: ${totalStarsCollected}`;
+            } else {
+                stars = [];
+                totalStarsCollected = 0;
+                starCounter.textContent = `Звезды: ${totalStarsCollected}`;
+                for (let i = 0; i < maxStars; i++) {
+                    createStar();
+                }
+            }
+        }
+
+        function saveGameState() {
+            localStorage.setItem('stars', JSON.stringify(stars));
+            localStorage.setItem('totalStarsCollected', totalStarsCollected);
+        }
+
+        function createStar() {
+            const starRadius = 10;
+            const starX = Math.random() * (canvas.width - starRadius * 2) + starRadius;
+            const starY = Math.random() * (canvas.height / 2);
+            stars.push({ x: starX, y: starY, radius: starRadius });
+        }
+
+        function drawStar(x, y, radius) {
+            const spikes = 5;
+            const step = Math.PI / spikes;
+            let rotation = (Math.PI / 2) * 3;
+            let x1, y1;
+            ctx.beginPath();
+            for (let i = 0; i < spikes; i++) {
+                x1 = x + Math.cos(rotation) * radius;
+                y1 = y + Math.sin(rotation) * radius;
+                ctx.lineTo(x1, y1);
+                rotation += step;
+
+                x1 = x + Math.cos(rotation) * radius / 2;
+                y1 = y + Math.sin(rotation) * radius / 2;
+                ctx.lineTo(x1, y1);
+                rotation += step;
+            }
+            ctx.lineTo(x, y - radius);
+            ctx.closePath();
+            ctx.fillStyle = "yellow";
+            ctx.fill();
+        }
+
+        function drawStars() {
+            stars.forEach(star => {
+                drawStar(star.x, star.y, star.radius);
+            });
+        }
+
+        function checkStarCollection() {
+            stars.forEach((star, index) => {
+                const dist = Math.sqrt((ballX - star.x) ** 2 + (ballY - star.y) ** 2);
+                if (dist < ballRadius + star.radius) {
+                    stars.splice(index, 1);
+                    totalStarsCollected++;
+                    starCounter.textContent = `Звезды: ${totalStarsCollected}`;
+                    createStar();
+                    saveGameState();
+                }
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') rightPressed = true;
+            if (e.key === 'ArrowLeft') leftPressed = true;
         });
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowRight') rightPressed = false;
+            if (e.key === 'ArrowLeft') leftPressed = false;
+        });
+
+        function initGame() {
+            stars = [];
+            for (let i = 0; i < maxStars; i++) {
+                createStar();
+            }
+            saveGameState();
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#ff0";
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+            ctx.fillStyle = "#fff";
+            ctx.lineJoin = 'round';
+            ctx.lineWidth = 8;
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function collisionDetection() {
+            if (ballX > paddleX && ballX < paddleX + paddleWidth && ballY + ballRadius > canvas.height - paddleHeight) {
+                ballDY = -ballDY;
+                ballY = canvas.height - paddleHeight - ballRadius;
+                bounceSound.currentTime = 0;
+                bounceSound.play();
+            }
+        }
+
+        function movePaddle() {
+            if (rightPressed && paddleX < canvas.width - paddleWidth) {
+                paddleX += 7;
+            } else if (leftPressed && paddleX > 0) {
+                paddleX -= 7;
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBall();
+            drawPaddle();
+            drawStars();
+            checkStarCollection();
+            collisionDetection();
+            movePaddle();
+
+            if (ballY + ballDY < ballRadius) {
+                ballDY = -ballDY;
+                wallSound.currentTime = 0;
+                wallSound.play();
+            } else if (ballY + ballDY > canvas.height - ballRadius) {
+                if (ballX > paddleX && ballX < paddleX + paddleWidth) {
+                    ballDY = -ballDY;
+                } else {
+                    gameOver();
+                }
+            }
+
+            if (ballX + ballDX > canvas.width - ballRadius || ballX + ballDX < ballRadius) {
+                ballDX = -ballDX;
+                wallSound.currentTime = 0;
+                wallSound.play();
+            }
+
+            ballX += ballDX;
+            ballY += ballDY;
+
+            if (!isGameOver) {
+                requestAnimationFrame(draw);
+            }
+        }
+
+        function gameOver() {
+            isGameOver = true;
+            gameOverMessage.style.display = 'block';
+            restartButton.style.display = 'inline-block';
+            canvas.classList.add('blurred');
+        }
+
+        function restartGame() {
+            isGameOver = false;
+            ballX = canvas.width / 2;
+            ballY = canvas.height - 30;
+            ballDX = 4;
+            ballDY = -4;
+            paddleX = (canvas.width - paddleWidth) / 2;
+            canvas.classList.remove('blurred');
+            gameOverMessage.style.display = 'none';
+            restartButton.style.display = 'none';
+            loadGameState();
+            draw();
+        }
+
+        restartButton.addEventListener('click', restartGame);
+
+        // Инициализация Web App Telegram
+        window.Telegram.WebApp.ready();
+
+        loadGameState();
+        draw();
     </script>
 </body>
 </html>
