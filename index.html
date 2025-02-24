@@ -83,18 +83,20 @@
         const restartButton = document.getElementById('restartButton');
         const starCounter = document.getElementById('starCounter');
 
-        canvas.width = 800;
-        canvas.height = 600;
+        let canvasWidth = window.innerWidth - 20;
+        let canvasHeight = window.innerHeight - 20;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
 
         let paddleWidth = 120, paddleHeight = 20, paddleX = (canvas.width - paddleWidth) / 2;
         let ballRadius = 10, ballX = canvas.width / 2, ballY = canvas.height - 30;
         let ballDX = 4, ballDY = -4;
-        let rightPressed = false, leftPressed = false;
         let isGameOver = false;
-
         let stars = [];
         let maxStars = 5;
         let totalStarsCollected = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
 
         function loadGameState() {
             const savedStars = localStorage.getItem('stars');
@@ -167,14 +169,18 @@
             });
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') rightPressed = true;
-            if (e.key === 'ArrowLeft') leftPressed = true;
-        });
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'ArrowRight') rightPressed = false;
-            if (e.key === 'ArrowLeft') leftPressed = false;
-        });
+        function movePaddle() {
+            if (touchStartX && touchEndX) {
+                const moveDistance = touchEndX - touchStartX;
+                if (Math.abs(moveDistance) > 50) {
+                    paddleX += (moveDistance > 0) ? 10 : -10;
+                    touchStartX = touchEndX;
+                }
+            }
+
+            if (paddleX < 0) paddleX = 0;
+            if (paddleX > canvas.width - paddleWidth) paddleX = canvas.width - paddleWidth;
+        }
 
         function initGame() {
             stars = [];
@@ -204,14 +210,6 @@
             if (ballX > paddleX && ballX < paddleX + paddleWidth && ballY + ballRadius > canvas.height - paddleHeight) {
                 ballDY = -ballDY;
                 ballY = canvas.height - paddleHeight - ballRadius;
-            }
-        }
-
-        function movePaddle() {
-            if (rightPressed && paddleX < canvas.width - paddleWidth) {
-                paddleX += 7;
-            } else if (leftPressed && paddleX > 0) {
-                paddleX -= 7;
             }
         }
 
@@ -274,6 +272,19 @@
         }
 
         restartButton.addEventListener('click', restartGame);
+
+        // Обработка жестов на мобильных устройствах
+        canvas.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            touchEndX = e.touches[0].clientX;
+        });
+
+        canvas.addEventListener('touchend', () => {
+            movePaddle();
+        });
 
         loadGameState();
         draw();
