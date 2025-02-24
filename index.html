@@ -14,6 +14,7 @@
             align-items: center;
             background-color: #333;
             overflow: hidden;
+            background-size: cover;
         }
 
         .game-container {
@@ -98,6 +99,13 @@
         let touchStartX = 0;
         let touchEndX = 0;
 
+        // Для отправки данных в Telegram Web App
+        function sendGameStatus(status) {
+            if (window.Telegram.WebApp) {
+                window.Telegram.WebApp.sendData(status);
+            }
+        }
+
         function loadGameState() {
             const savedStars = localStorage.getItem('stars');
             const savedStarsCollected = localStorage.getItem('totalStarsCollected');
@@ -169,18 +177,17 @@
             });
         }
 
-        function movePaddle() {
-            if (touchStartX && touchEndX) {
-                const moveDistance = touchEndX - touchStartX;
-                if (Math.abs(moveDistance) > 50) {
-                    paddleX += (moveDistance > 0) ? 10 : -10;
-                    touchStartX = touchEndX;
-                }
-            }
+        // Установим управление с помощью наклона устройства
+        window.addEventListener('deviceorientation', (event) => {
+            const tilt = event.gamma; // Наклон устройства по оси X
 
+            // Двигаем доску влево/вправ в зависимости от наклона
+            paddleX += tilt * 0.1;
+
+            // Ограничиваем движение доски, чтобы она не выходила за пределы канваса
             if (paddleX < 0) paddleX = 0;
             if (paddleX > canvas.width - paddleWidth) paddleX = canvas.width - paddleWidth;
-        }
+        });
 
         function initGame() {
             stars = [];
@@ -220,7 +227,6 @@
             drawStars();
             checkStarCollection();
             collisionDetection();
-            movePaddle();
 
             if (ballY + ballDY < ballRadius) {
                 ballDY = -ballDY;
@@ -249,12 +255,7 @@
             gameOverMessage.style.display = 'block';
             restartButton.style.display = 'inline-block';
             canvas.classList.add('blurred');
-
-            // Отправляем данные в Web App
-            if (window.Telegram.WebApp) {
-                window.Telegram.WebApp.sendData(won ? 'win' : 'lose');
-                window.Telegram.WebApp.close();
-            }
+            sendGameStatus(won ? 'win' : 'lose');
         }
 
         function restartGame() {
@@ -272,19 +273,6 @@
         }
 
         restartButton.addEventListener('click', restartGame);
-
-        // Обработка жестов на мобильных устройствах
-        canvas.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-        });
-
-        canvas.addEventListener('touchmove', (e) => {
-            touchEndX = e.touches[0].clientX;
-        });
-
-        canvas.addEventListener('touchend', () => {
-            movePaddle();
-        });
 
         loadGameState();
         draw();
