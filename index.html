@@ -74,8 +74,6 @@
         <div class="game-over-message" id="gameOverMessage">Вы проиграли!</div>
         <button class="restart-button" id="restartButton">Перезапустить игру</button>
         <div class="star-counter" id="starCounter">Звезды: 0</div>
-        <audio id="bounceSound" src="tap-notification-180637.mp3" preload="auto"></audio>
-        <audio id="wallSound" src="tap-notification-180637.mp3" preload="auto"></audio>
     </div>
 
     <script>
@@ -83,8 +81,6 @@
         const ctx = canvas.getContext('2d');
         const gameOverMessage = document.getElementById('gameOverMessage');
         const restartButton = document.getElementById('restartButton');
-        const bounceSound = document.getElementById('bounceSound');
-        const wallSound = document.getElementById('wallSound');
         const starCounter = document.getElementById('starCounter');
 
         canvas.width = 800;
@@ -200,8 +196,6 @@
             ctx.beginPath();
             ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
             ctx.fillStyle = "#fff";
-            ctx.lineJoin = 'round';
-            ctx.lineWidth = 8;
             ctx.fill();
             ctx.closePath();
         }
@@ -210,8 +204,6 @@
             if (ballX > paddleX && ballX < paddleX + paddleWidth && ballY + ballRadius > canvas.height - paddleHeight) {
                 ballDY = -ballDY;
                 ballY = canvas.height - paddleHeight - ballRadius;
-                bounceSound.currentTime = 0;
-                bounceSound.play();
             }
         }
 
@@ -234,20 +226,16 @@
 
             if (ballY + ballDY < ballRadius) {
                 ballDY = -ballDY;
-                wallSound.currentTime = 0;
-                wallSound.play();
             } else if (ballY + ballDY > canvas.height - ballRadius) {
                 if (ballX > paddleX && ballX < paddleX + paddleWidth) {
                     ballDY = -ballDY;
                 } else {
-                    gameOver();
+                    gameOver(false);
                 }
             }
 
             if (ballX + ballDX > canvas.width - ballRadius || ballX + ballDX < ballRadius) {
                 ballDX = -ballDX;
-                wallSound.currentTime = 0;
-                wallSound.play();
             }
 
             ballX += ballDX;
@@ -258,11 +246,17 @@
             }
         }
 
-        function gameOver() {
+        function gameOver(won) {
             isGameOver = true;
             gameOverMessage.style.display = 'block';
             restartButton.style.display = 'inline-block';
             canvas.classList.add('blurred');
+
+            // Отправляем данные в Web App
+            if (window.Telegram.WebApp) {
+                window.Telegram.WebApp.sendData(won ? 'win' : 'lose');
+                window.Telegram.WebApp.close();
+            }
         }
 
         function restartGame() {
@@ -280,9 +274,6 @@
         }
 
         restartButton.addEventListener('click', restartGame);
-
-        // Инициализация Web App Telegram
-        window.Telegram.WebApp.ready();
 
         loadGameState();
         draw();
