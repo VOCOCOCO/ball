@@ -245,12 +245,17 @@
     gameOverMessage.style.display = 'block';
     restartButton.style.display = 'inline-block';
     canvas.classList.add('blurred');
+
+    // Формируем строку, которая передает результат игры и количество звёзд
+    const message = `Результат игры, Звезды: ${totalStarsCollected}`;
+    
+    // Отправляем данные в бота
     if (window.Telegram.WebApp) {
-        const resultData = won ? 'win' : 'lose';
-        window.Telegram.WebApp.sendData(`${resultData} - Звезды: ${totalStarsCollected}`);
+        window.Telegram.WebApp.sendData(message);
         window.Telegram.WebApp.close();
     }
 }
+
 
 
         function restartGame() {
