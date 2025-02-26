@@ -240,13 +240,13 @@
             }
         }
 
-       function gameOver(won) {
+     function gameOver(won) {
     isGameOver = true;
     gameOverMessage.style.display = 'block';
     restartButton.style.display = 'inline-block';
     canvas.classList.add('blurred');
 
-    // Формируем строку, которая передает результат игры и количество звёзд
+    // Формируем строку с результатом игры и количеством собранных звёзд
     const message = `Результат игры, Звезды: ${totalStarsCollected}`;
     
     // Отправляем данные в бота
@@ -254,6 +254,7 @@
         window.Telegram.WebApp.sendData(message);
         window.Telegram.WebApp.close();
     }
+}
 }
 
 
