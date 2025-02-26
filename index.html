@@ -241,23 +241,24 @@
         }
 
         function gameOver(won) {
-            isGameOver = true;
-            gameOverMessage.style.display = 'block';
-            restartButton.style.display = 'inline-block';
-            canvas.classList.add('blurred');
+    isGameOver = true;
+    gameOverMessage.style.display = 'block';
+    restartButton.style.display = 'inline-block';
+    canvas.classList.add('blurred');
 
-            // Показываем количество собранных звёзд на экране
-            gameOverMessage.textContent = `Вы проиграли! Звёзды: ${totalStarsCollected}`;
+    // Показываем количество собранных звёзд на экране
+    gameOverMessage.textContent = won ? `Вы выиграли! Звёзды: ${totalStarsCollected}` : `Вы проиграли! Звёзды: ${totalStarsCollected}`;
 
-            // Формируем строку с результатом игры и количеством собранных звёзд
-            const message = `Результат игры: проигрыш, Звезды: ${totalStarsCollected}`;
-            
-            // Отправляем данные в бота
-            if (window.Telegram.WebApp) {
-                window.Telegram.WebApp.sendData(message); // Отправляем данные боту
-                window.Telegram.WebApp.close(); // Закрываем WebApp
-            }
-        }
+    // Формируем строку с результатом игры и количеством собранных звёзд
+    const message = `Результат игры: ${won ? 'Победа' : 'Проигрыш'}, Звезды: ${totalStarsCollected}`;
+
+    // Отправляем данные в бота
+    if (window.Telegram.WebApp) {
+        window.Telegram.WebApp.sendData(message); // Отправляем данные боту
+        window.Telegram.WebApp.close(); // Закрываем WebApp
+    }
+}
+
 
         function restartGame() {
             isGameOver = false;
