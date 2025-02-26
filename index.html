@@ -240,16 +240,18 @@
             }
         }
 
-        function gameOver(won) {
-            isGameOver = true;
-            gameOverMessage.style.display = 'block';
-            restartButton.style.display = 'inline-block';
-            canvas.classList.add('blurred');
-            if (window.Telegram.WebApp) {
-                window.Telegram.WebApp.sendData(won ? 'win' : 'lose');
-                window.Telegram.WebApp.close();
-            }
-        }
+       function gameOver(won) {
+    isGameOver = true;
+    gameOverMessage.style.display = 'block';
+    restartButton.style.display = 'inline-block';
+    canvas.classList.add('blurred');
+    if (window.Telegram.WebApp) {
+        const resultData = won ? 'win' : 'lose';
+        window.Telegram.WebApp.sendData(`${resultData} - Звезды: ${totalStarsCollected}`);
+        window.Telegram.WebApp.close();
+    }
+}
+
 
         function restartGame() {
             isGameOver = false;
