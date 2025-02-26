@@ -246,18 +246,19 @@
     restartButton.style.display = 'inline-block';
     canvas.classList.add('blurred');
 
-    // Формируем строку с результатом игры и количеством собранных звёзд
-    const message = `Результат игры, Звезды: ${totalStarsCollected}`;
+    // Показываем количество собранных звёзд на экране
+    gameOverMessage.textContent = `Вы проиграли! Звёзды: ${totalStarsCollected}`;
 
-    // Выводим сообщение в консоль для проверки
-    console.log('Отправляем сообщение в бот:', message);
+    // Формируем строку с результатом игры и количеством собранных звёзд
+    const message = `Результат игры: проигрыш, Звезды: ${totalStarsCollected}`;
     
     // Отправляем данные в бота
     if (window.Telegram.WebApp) {
-        window.Telegram.WebApp.sendData(message);
-        window.Telegram.WebApp.close();
+        window.Telegram.WebApp.sendData(message); // Отправляем данные боту
+        window.Telegram.WebApp.close(); // Закрываем WebApp
     }
 }
+
 
 
 
