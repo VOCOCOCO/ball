@@ -102,28 +102,6 @@
             window.Telegram.WebApp.expand();
         }
 
-        function loadGameState() {
-            const savedStars = localStorage.getItem('stars');
-            const savedStarsCollected = localStorage.getItem('totalStarsCollected');
-            if (savedStars && savedStarsCollected !== null) {
-                stars = JSON.parse(savedStars);
-                totalStarsCollected = parseInt(savedStarsCollected);
-                starCounter.textContent = `Звезды: ${totalStarsCollected}`;
-            } else {
-                stars = [];
-                totalStarsCollected = 0;
-                starCounter.textContent = `Звезды: ${totalStarsCollected}`;
-                for (let i = 0; i < maxStars; i++) {
-                    createStar();
-                }
-            }
-        }
-
-        function saveGameState() {
-            localStorage.setItem('stars', JSON.stringify(stars));
-            localStorage.setItem('totalStarsCollected', totalStarsCollected);
-        }
-
         function createStar() {
             const starRadius = 10;
             const starX = Math.random() * (canvas.width - starRadius * 2) + starRadius;
@@ -168,7 +146,6 @@
                     totalStarsCollected++;
                     starCounter.textContent = `Звезды: ${totalStarsCollected}`;
                     createStar();
-                    saveGameState();
                 }
             });
         }
@@ -181,10 +158,11 @@
 
         function initGame() {
             stars = [];
+            totalStarsCollected = 0;  // Сбрасываем количество собранных звёзд
+            starCounter.textContent = `Звезды: ${totalStarsCollected}`;
             for (let i = 0; i < maxStars; i++) {
                 createStar();
             }
-            saveGameState();
         }
 
         function drawBall() {
@@ -269,7 +247,7 @@
             canvas.classList.remove('blurred');
             gameOverMessage.style.display = 'none';
             restartButton.style.display = 'none';
-            loadGameState();
+            initGame();  // Сбрасываем игру
             draw();
         }
 
@@ -285,7 +263,7 @@
             movePaddle(touchX);
         });
 
-        loadGameState();
+        initGame();  // Инициализация игры при старте
         draw();
     </script>
 </body>
