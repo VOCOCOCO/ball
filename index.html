@@ -109,11 +109,11 @@
             if (savedStars && savedStarsCollected !== null) {
                 stars = JSON.parse(savedStars);
                 totalStarsCollected = parseInt(savedStarsCollected);
-                starCounter.textContent = 'Звезды: ${totalStarsCollected}';
+                starCounter.textContent = `Звезды: ${totalStarsCollected}`;
             } else {
                 stars = [];
                 totalStarsCollected = 0;
-                starCounter.textContent = 'Звезды: ${totalStarsCollected}';
+                starCounter.textContent = `Звезды: ${totalStarsCollected}`;
                 for (let i = 0; i < maxStars; i++) {
                     createStar();
                 }
@@ -125,7 +125,8 @@
             localStorage.setItem('totalStarsCollected', totalStarsCollected);
         }
 
-        function createStar() {const starRadius = 10;
+        function createStar() {
+            const starRadius = 10;
             const starX = Math.random() * (canvas.width - starRadius * 2) + starRadius;
             const starY = Math.random() * (canvas.height / 2);
             stars.push({ x: starX, y: starY, radius: starRadius });
@@ -166,7 +167,7 @@
                 if (dist < ballRadius + star.radius) {
                     stars.splice(index, 1);
                     totalStarsCollected++;
-                    starCounter.textContent = 'Звезды: ${totalStarsCollected}';
+                    starCounter.textContent = `Звезды: ${totalStarsCollected}`;
                     createStar();
                     saveGameState();
                 }
@@ -246,7 +247,8 @@
             restartButton.style.display = 'inline-block';
             canvas.classList.add('blurred');
             if (window.Telegram.WebApp) {
-                window.Telegram.WebApp.sendData(won ? 'win' : 'lose');window.Telegram.WebApp.close();
+                window.Telegram.WebApp.sendData(won ? 'win' : 'lose');
+                window.Telegram.WebApp.close();
             }
         }
 
