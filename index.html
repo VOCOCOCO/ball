@@ -1,271 +1,125 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Игра с теннисным мячиком</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #333;
-            overflow: hidden;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Главная</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0d1117;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
 
-        .game-container {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-        canvas {
-            border: 2px solid #fff;
-        }
+    .news-banner {
+      height: 50px;
+      width: 100%;
+      background: linear-gradient(to right, #80d5ff, #79b1ff, #80d5ff);
+      color: white;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
 
-        .game-over-message {
-            font-size: 30px;
-            color: white;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-            text-align: center;
-            display: none;
-            margin-top: 20px;
-        }
+    .gift-block {
+      width: 120px;
+      height: 140px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 10px;
+    }
 
-        .restart-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #ff0;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            display: none;
-        }
+    .gift-block img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
 
-        .restart-button:hover {
-            background-color: #ffaa00;
-        }
+    .gift-price {
+      margin-top: 5px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffffff;
+    }
 
-        .blurred {
-            filter: blur(2px);
-        }
+    .gift-container {
+      display: flex;
+      justify-content: flex-start;
+    }
 
-        .star-counter {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 24px;
-            color: #fff;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-        }
-    </style>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    .modal {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .modal iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: red;
+      border: none;
+      color: white;
+      font-size: 18px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 10000;
+    }
+  </style>
 </head>
 <body>
-    <div class="game-container">
-        <canvas id="gameCanvas"></canvas>
-        <div class="game-over-message" id="gameOverMessage">Вы проиграли!</div>
-        <button class="restart-button" id="restartButton">Перезапустить игру</button>
-        <div class="star-counter" id="starCounter">Звезды: 0</div>
+  <div class="container">
+    <div class="news-banner" onclick="window.location.href='https://t.me/voco_in'">Check our news!</div>
+
+    <div class="gift-container">
+      <div class="gift-block" onclick="openModal()">
+        <img src="nothing_drop.png" alt="gift" />
+        <div class="gift-price">35★</div>
+      </div>
     </div>
+  </div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const gameOverMessage = document.getElementById('gameOverMessage');
-        const restartButton = document.getElementById('restartButton');
-        const starCounter = document.getElementById('starCounter');
+  <div class="modal" id="rouletteModal">
+    <button class="close-btn" onclick="closeModal()">✖</button>
+    <iframe src="roulette.html"></iframe>
+  </div>
 
-        let canvasWidth = window.innerWidth - 20;
-        let canvasHeight = window.innerHeight - 20;
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
+  <script>
+    function openModal() {
+      document.getElementById('rouletteModal').style.display = 'flex';
+    }
 
-        let paddleWidth = 120, paddleHeight = 20, paddleX = (canvas.width - paddleWidth) / 2;
-        let ballRadius = 10, ballX = canvas.width / 2, ballY = canvas.height - 30;
-        let ballDX = 4, ballDY = -4;
-        let isGameOver = false;
-        let stars = [];
-        let maxStars = 5;
-        let totalStarsCollected = 0;
-
-        // Для работы с Telegram Web App
-        if (window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand();
-        }
-
-        function createStar() {
-            const starRadius = 10;
-            const starX = Math.random() * (canvas.width - starRadius * 2) + starRadius;
-            const starY = Math.random() * (canvas.height / 2);
-            stars.push({ x: starX, y: starY, radius: starRadius });
-        }
-
-        function drawStar(x, y, radius) {
-            const spikes = 5;
-            const step = Math.PI / spikes;
-            let rotation = (Math.PI / 2) * 3;
-            let x1, y1;
-            ctx.beginPath();
-            for (let i = 0; i < spikes; i++) {
-                x1 = x + Math.cos(rotation) * radius;
-                y1 = y + Math.sin(rotation) * radius;
-                ctx.lineTo(x1, y1);
-                rotation += step;
-
-                x1 = x + Math.cos(rotation) * radius / 2;
-                y1 = y + Math.sin(rotation) * radius / 2;
-                ctx.lineTo(x1, y1);
-                rotation += step;
-            }
-            ctx.lineTo(x, y - radius);
-            ctx.closePath();
-            ctx.fillStyle = "yellow";
-            ctx.fill();
-        }
-
-        function drawStars() {
-            stars.forEach(star => {
-                drawStar(star.x, star.y, star.radius);
-            });
-        }
-
-        function checkStarCollection() {
-            stars.forEach((star, index) => {
-                const dist = Math.sqrt((ballX - star.x) ** 2 + (ballY - star.y) ** 2);
-                if (dist < ballRadius + star.radius) {
-                    stars.splice(index, 1);
-                    totalStarsCollected++;
-                    starCounter.textContent = `Звезды: ${totalStarsCollected}`;
-                    createStar();
-                }
-            });
-        }
-
-        function movePaddle(x) {
-            paddleX = x - paddleWidth / 2;
-            if (paddleX < 0) paddleX = 0;
-            if (paddleX > canvas.width - paddleWidth) paddleX = canvas.width - paddleWidth;
-        }
-
-        function initGame() {
-            stars = [];
-            totalStarsCollected = 0;  // Сбрасываем количество собранных звёзд
-            starCounter.textContent = `Звезды: ${totalStarsCollected}`;
-            for (let i = 0; i < maxStars; i++) {
-                createStar();
-            }
-        }
-
-        function drawBall() {
-            ctx.beginPath();
-            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "#ff0";
-            ctx.fill();
-            ctx.closePath();
-        }
-
-        function drawPaddle() {
-            ctx.beginPath();
-            ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
-            ctx.fillStyle = "#fff";
-            ctx.fill();
-            ctx.closePath();
-        }
-
-        function collisionDetection() {
-            if (ballX > paddleX && ballX < paddleX + paddleWidth && ballY + ballRadius > canvas.height - paddleHeight) {
-                ballDY = -ballDY;
-                ballY = canvas.height - paddleHeight - ballRadius;
-            }
-        }
-
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawBall();
-            drawPaddle();
-            drawStars();
-            checkStarCollection();
-            collisionDetection();
-
-            if (ballY + ballDY < ballRadius) {
-                ballDY = -ballDY;
-            } else if (ballY + ballDY > canvas.height - ballRadius) {
-                if (ballX > paddleX && ballX < paddleX + paddleWidth) {
-                    ballDY = -ballDY;
-                } else {
-                    gameOver(false);
-                }
-            }
-
-            if (ballX + ballDX > canvas.width - ballRadius || ballX + ballDX < ballRadius) {
-                ballDX = -ballDX;
-            }
-
-            ballX += ballDX;
-            ballY += ballDY;
-
-            if (!isGameOver) {
-                requestAnimationFrame(draw);
-            }
-        }
-
-        function gameOver(won) {
-            isGameOver = true;
-            gameOverMessage.style.display = 'block';
-            restartButton.style.display = 'inline-block';
-            canvas.classList.add('blurred');
-
-            // Показываем количество собранных звёзд на экране
-            gameOverMessage.textContent = won ? `Вы выиграли! Звёзды: ${totalStarsCollected}` : `Вы проиграли! Звёзды: ${totalStarsCollected}`;
-
-            // Формируем строку с результатом игры и количеством собранных звёзд
-            const message = `Результат игры: ${won ? 'Победа' : 'Проигрыш'}, Звезды: ${totalStarsCollected}`;
-
-            // Отправляем данные в бота
-            if (window.Telegram.WebApp) {
-                window.Telegram.WebApp.sendData(message); // Отправляем данные боту
-                window.Telegram.WebApp.close(); // Закрываем WebApp
-            }
-        }
-
-        function restartGame() {
-            isGameOver = false;
-            ballX = canvas.width / 2;
-            ballY = canvas.height - 30;
-            ballDX = 4;
-            ballDY = -4;
-            paddleX = (canvas.width - paddleWidth) / 2;
-            canvas.classList.remove('blurred');
-            gameOverMessage.style.display = 'none';
-            restartButton.style.display = 'none';
-            initGame();  // Сбрасываем игру
-            draw();
-        }
-
-        restartButton.addEventListener('click', restartGame);
-
-        // Обработка движения пальца по экрану
-        canvas.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-        });
-
-        canvas.addEventListener('touchmove', (e) => {
-            let touchX = e.touches[0].clientX;
-            movePaddle(touchX);
-        });
-
-        initGame();  // Инициализация игры при старте
-        draw();
-    </script>
+    function closeModal() {
+      document.getElementById('rouletteModal').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
-
