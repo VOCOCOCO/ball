@@ -126,18 +126,7 @@
       document.getElementById("rouletteFrame").style.display = "block";
     }
 
-    window.addEventListener("popstate", (event) => {
-      if (location.hash !== "#roulette") {
-        document.getElementById("rouletteFrame").style.display = "none";
-        document.getElementById("mainPage").style.display = "block";
-      }
-    });
-
-    // Обработка перезагрузки на #roulette
-    if (location.hash === "#roulette") {
-      document.getElementById("mainPage").style.display = "none";
-      document.getElementById("rouletteFrame").style.display = "block";
-    }
+  
 
   </script>
 </body>
