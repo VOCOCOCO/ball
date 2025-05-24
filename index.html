@@ -30,6 +30,7 @@
       font-weight: 600;
       font-size: 16px;
       margin-bottom: 20px;
+      box-sizing: border-box;
     }
 
     .news-banner span {
@@ -49,35 +50,47 @@
     .cards {
       display: flex;
       gap: 12px;
+      justify-content: center;
+      flex-wrap: nowrap;
     }
 
     .card {
       position: relative;
-      flex: 1;
+      flex: 1 1 calc(50% - 6px);
+      max-width: calc(50% - 6px);
       border-radius: 20px;
       overflow: hidden;
       cursor: pointer;
       aspect-ratio: 1 / 1;
       background: #1c1c1e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+        width: 80%;
+        height: 80%;
+        object-fit: cover;
+        display: block;
+        pointer-events: none;
+        margin-top: -9%;
     }
+      
 
+    /* Цена по центру внизу */
     .card span {
       position: absolute;
-      bottom: 10px;
-      left: 10px;
-      background: rgba(0, 0, 0, 0.6);
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 60, 255, 0.163);
       padding: 4px 8px;
-      border-radius: 8px;
+      border-radius: 9px;
       font-size: 14px;
       font-weight: 500;
       color: white;
+      user-select: none;
     }
 
     iframe {
@@ -96,18 +109,18 @@
   <div class="container" id="mainPage">
     <div class="news-banner">
       <span>Check our news</span>
-      <button onclick="window.open('https://t.me/case', '_blank')">Open @case</button>
+      <button onclick="window.open('https://t.me/voco_in', '_blank')">Open @voco_in</button>
     </div>
 
     <div class="cards">
-      <div class="card">
-        <img src="free.png" alt="Free box" />
-        <span>Фри бокс</span>
+      <div class="card" onclick="openFreeBox()">
+        <img src="Hat Toss.png" alt="Free box" />
+        <span>ㅤFreeㅤ</span>
       </div>
 
       <div class="card" onclick="openRoulette()">
-        <img src="case.png" alt="Case" />
-        <span>35 ★</span>
+        <img src="Oculus.png" alt="Case" />
+        <span>ㅤ35 ★ㅤ</span>
       </div>
     </div>
   </div>
@@ -121,22 +134,24 @@
       document.getElementById("rouletteFrame").style.display = "block";
     }
 
-    window.addEventListener("popstate", (event) => {
+    // Заглушка для открытия файла по клику на фри бокс — укажи путь
+    function openFreeBox() {
+      window.open('freebox.html', '_blank');
+    }
+
+    window.addEventListener("popstate", () => {
       if (location.hash !== "#roulette") {
         document.getElementById("rouletteFrame").style.display = "none";
         document.getElementById("mainPage").style.display = "block";
       }
     });
 
-    // Обработка перезагрузки на #roulette
     if (location.hash === "#roulette") {
       document.getElementById("mainPage").style.display = "none";
       document.getElementById("rouletteFrame").style.display = "block";
     }
-    Telegram.WebApp.ready();
-Telegram.WebApp.BackButton.show();
-
   </script>
 </body>
 </html>
+
 
