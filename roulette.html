@@ -230,6 +230,14 @@
   </div>
   <footer class="footer-text">© 2025 All rights reserved</footer>  
   <script>
+    Telegram.WebApp.ready(); // Инициализация WebApp
+
+  Telegram.WebApp.BackButton.show(); // Показать кнопку "Назад"
+
+  Telegram.WebApp.BackButton.onClick(() => {
+    // Поведение при нажатии кнопки "Назад"
+    window.history.back(); // Или своё кастомное действие
+  });
     const modalImage = document.getElementById("modalImage");
     modalImage.src = "nothing_drop.png";
     modalImage.style.display = "block";
