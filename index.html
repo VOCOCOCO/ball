@@ -120,15 +120,23 @@
   <iframe id="rouletteFrame" src="roulette.html"></iframe>
 
   <script>
+    // Функция открытия "рулетки"
     function openRoulette() {
       history.pushState({ page: "roulette" }, "", "#roulette");
       document.getElementById("mainPage").style.display = "none";
       document.getElementById("rouletteFrame").style.display = "block";
     }
 
-  
+    // При загрузке страницы добавляем фиктивное состояние в историю
+    window.onload = () => {
+      history.pushState(null, null, location.href);
+    };
 
+    // Перехватываем событие "назад" в браузере, чтобы отменить переход
+    window.addEventListener('popstate', (event) => {
+      // Просто возвращаем фиктивное состояние назад
+      history.pushState(null, null, location.href);
+    });
   </script>
 </body>
 </html>
-
