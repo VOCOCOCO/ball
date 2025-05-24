@@ -69,14 +69,13 @@
     }
 
     .card img {
-        width: 80%;
-        height: 80%;
-        object-fit: cover;
-        display: block;
-        pointer-events: none;
-        margin-top: -9%;
+      width: 80%;
+      height: 80%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+      margin-top: -9%;
     }
-      
 
     /* Цена по центру внизу */
     .card span {
@@ -125,37 +124,49 @@
     </div>
   </div>
 
-  <iframe id="rouletteFrame" src="roulette.html"></iframe>
+  <iframe id="rouletteFrame" src=""></iframe>
 
   <script>
     function openRoulette() {
       history.pushState({ page: "roulette" }, "", "#roulette");
       document.getElementById("mainPage").style.display = "none";
-      document.getElementById("rouletteFrame").style.display = "block";
+      const iframe = document.getElementById("rouletteFrame");
+      iframe.src = "roulette.html";
+      iframe.style.display = "block";
     }
 
-    // Заглушка для открытия файла по клику на фри бокс — укажи путь
     function openFreeBox() {
-      window.open('freebox.html', '_blank');
+      history.pushState({ page: "freebox" }, "", "#freebox");
+      document.getElementById("mainPage").style.display = "none";
+      const iframe = document.getElementById("rouletteFrame");
+      iframe.src = "roulette1.html"; // Замени на путь к твоему файлу для Free кейса
+      iframe.style.display = "block";
     }
 
     window.addEventListener("popstate", () => {
-      if (location.hash !== "#roulette") {
-        document.getElementById("rouletteFrame").style.display = "none";
+      if (location.hash !== "#roulette" && location.hash !== "#freebox") {
+        const iframe = document.getElementById("rouletteFrame");
+        iframe.style.display = "none";
+        iframe.src = "";
         document.getElementById("mainPage").style.display = "block";
       }
     });
 
+    // При загрузке страницы проверяем хеш, чтобы показать нужный экран
     if (location.hash === "#roulette") {
       document.getElementById("mainPage").style.display = "none";
-      document.getElementById("rouletteFrame").style.display = "block";
+      const iframe = document.getElementById("rouletteFrame");
+      iframe.src = "roulette.html";
+      iframe.style.display = "block";
+    } else if (location.hash === "#freebox") {
+      document.getElementById("mainPage").style.display = "none";
+      const iframe = document.getElementById("rouletteFrame");
+      iframe.src = "roulette1.html"; // Тот же путь, что и в openFreeBox
+      iframe.style.display = "block";
     }
   </script>
 </body>
 </html>
-
-
-
 
 
 
