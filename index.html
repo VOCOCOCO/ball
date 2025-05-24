@@ -133,6 +133,14 @@
       document.getElementById("mainPage").style.display = "none";
       document.getElementById("rouletteFrame").style.display = "block";
     }
+    Telegram.WebApp.ready(); // Обязательно
+
+  Telegram.WebApp.BackButton.show(); // Показать кнопку "Назад"
+
+  Telegram.WebApp.BackButton.onClick(() => {
+    document.getElementById("somePage").style.display = "none";
+    document.getElementById("mainPage").style.display = "block";
+  });
   </script>
 </body>
 </html>
