@@ -230,14 +230,6 @@
   </div>
   <footer class="footer-text">© 2025 All rights reserved</footer>  
   <script>
-    Telegram.WebApp.ready(); // Инициализация WebApp
-
-  Telegram.WebApp.BackButton.show(); // Показать кнопку "Назад"
-
-  Telegram.WebApp.BackButton.onClick(() => {
-    // Поведение при нажатии кнопки "Назад"
-    window.history.back(); // Или своё кастомное действие
-  });
     const modalImage = document.getElementById("modalImage");
     modalImage.src = "nothing_drop.png";
     modalImage.style.display = "block";
@@ -310,23 +302,19 @@
       dragFree: true
     });
 
-    // В начале скрипта или в конце
-Telegram.WebApp.BackButton.show();
+  Telegram.WebApp.ready(); // Обязательно
 
-Telegram.WebApp.BackButton.onClick(() => {
-  const modal = document.getElementById("modal");
-  if (modal.style.display === "flex") {
-    modal.style.display = "none";
-    gsap.set(giftsTrack, {x: 0});
-    spinning = false;
-  } else {
-    Telegram.WebApp.close(); // или history.back();
-  }
-});
+  Telegram.WebApp.BackButton.show(); // Показать кнопку "Назад"
 
+  Telegram.WebApp.BackButton.onClick(() => {
+    document.getElementById("somePage").style.display = "none";
+    document.getElementById("mainPage").style.display = "block";
+  });
+      
   </script>
 </body>
 </html>
+
 
 
 
