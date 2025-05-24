@@ -301,7 +301,24 @@
       align: "start",
       dragFree: true
     });
+
+    // В начале скрипта или в конце
+Telegram.WebApp.BackButton.show();
+
+Telegram.WebApp.BackButton.onClick(() => {
+  const modal = document.getElementById("modal");
+  if (modal.style.display === "flex") {
+    modal.style.display = "none";
+    gsap.set(giftsTrack, {x: 0});
+    spinning = false;
+  } else {
+    Telegram.WebApp.close(); // или history.back();
+  }
+});
+
   </script>
 </body>
 </html>
+
+
 
