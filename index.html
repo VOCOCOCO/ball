@@ -139,13 +139,8 @@
       document.getElementById("rouletteFrame").style.display = "block";
     }
 Telegram.WebApp.ready();
+Telegram.WebApp.BackButton.hide();
 
-function hideBackButton() {
-  Telegram.WebApp.BackButton.hide();
-  Telegram.WebApp.BackButton.onClick(() => {});
-}
-
-hideBackButton(); // спрятать кнопку назад
 
 
   </script>
