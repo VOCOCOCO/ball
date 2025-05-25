@@ -233,6 +233,16 @@
       }
     });
   </script>
-</body>
-</html>
-
+  <script>
+    window.addEventListener("message", (event) => {
+      if (event.data && event.data.action === "goBack") {
+        const iframe = document.getElementById("rouletteFrame");
+        iframe.style.display = "none";
+        iframe.src = "";
+        document.getElementById("mainPage").style.display = "block";
+        history.pushState({}, "", " ");
+      }
+    });
+  </script>
+  </body>
+  </html>
