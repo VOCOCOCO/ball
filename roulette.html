@@ -303,13 +303,14 @@
     });
 
     
-Telegram.WebApp.ready();
-Telegram.WebApp.BackButton.show();
-Telegram.WebApp.MainButton.hide();
-
-Telegram.WebApp.BackButton.onClick(() => {
-  window.parent.postMessage({ action: "goBack" }, "*");
-});  
+    Telegram.WebApp.ready();
+    Telegram.WebApp.BackButton.show();
+    Telegram.WebApp.MainButton.hide();
+    
+    Telegram.WebApp.BackButton.onClick(() => {
+      window.history.back(); // теперь работает, потому что есть pushState
+    });
+      
   </script>
 </body>
 </html>
