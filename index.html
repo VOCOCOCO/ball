@@ -232,6 +232,14 @@
         iframe.style.display = "block";
       }
     });
+
+    window.addEventListener("message", (event) => {
+        if (event.data.action === "goBack") {
+        history.back();
+      }
+    });
+          
   </script>
 </body>
 </html>
+
