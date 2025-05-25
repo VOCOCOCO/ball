@@ -219,30 +219,22 @@
 
     window.addEventListener("DOMContentLoaded", () => {
       updateProfile();
-
-      if (location.hash === "#roulette") {
-        document.getElementById("mainPage").style.display = "none";
+    });
+    
+      function openRoulette() {
         const iframe = document.getElementById("rouletteFrame");
         iframe.src = "roulette.html";
         iframe.style.display = "block";
-      } else if (location.hash === "#freebox") {
         document.getElementById("mainPage").style.display = "none";
-        const iframe = document.getElementById("rouletteFrame");
-        iframe.src = "Roulette1.html";
-        iframe.style.display = "block";
+        history.pushState({ screen: "roulette" }, "", "#roulette");
       }
-    });
-  </script>
-  <script>
-    window.addEventListener("message", (event) => {
-      if (event.data && event.data.action === "goBack") {
+      window.addEventListener("popstate", () => {
         const iframe = document.getElementById("rouletteFrame");
         iframe.style.display = "none";
         iframe.src = "";
         document.getElementById("mainPage").style.display = "block";
-        history.pushState({}, "", " ");
-      }
-    });
+      });            
+    
   </script>
   </body>
   </html>
