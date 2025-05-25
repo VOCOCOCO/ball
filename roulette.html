@@ -303,18 +303,15 @@
     });
       
     
-    Telegram.WebApp.ready();
-      
-    if (Telegram.WebApp.BackButton && Telegram.WebApp.BackButton.isVisible !== undefined) {
-          Telegram.WebApp.BackButton.show();
-      
-        Telegram.WebApp.BackButton.onClick(() => {
-            window.history.back(); // Возврат назад в iframe
-        });
-    }
-      
-      
-      
+    Telegram.WebApp.ready(); // Обязательно
+
+    // Показываем кнопку назад
+    Telegram.WebApp.BackButton.show();
+  
+    // Устанавливаем обработчик нажатия
+    Telegram.WebApp.BackButton.onClick(() => {
+      window.history.back(); // Или window.location.href = "index.html";
+    });
 
   </script>
 </body>
