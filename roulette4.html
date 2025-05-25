@@ -248,13 +248,13 @@
   <footer class="footer-text">© 2025 All rights reserved</footer>  
   <script>
     const modalImage = document.getElementById("modalImage");
-    modalImage.src = "nothing_drop.png";
+    modalImage.src = "bvK9PmcyFgAh4gP.png";
     modalImage.style.display = "block";
 
     const gifts = [
-      "1CHzB4K5FantEZu.png","680e5d8f8bf66.png","toTNAm2yurDAiqK.png","U8z9ivaScNyJ86V.png",
-      "9rCyWkAz7WFyaN0.png","",
-      "nothing_drop.png","pudbsohqxfD98gc.png","bvK9PmcyFgAh4gP.png","q2c0eUx5k8krA97.png"
+      "zFNBfMsaFhboT8P.png","Green Rose.png","pudbsohqxfD98gc.png","zFNBfMsaFhboT8P.png",
+      "bvK9PmcyFgAh4gP.png","Mermaid.png",
+      "zFNBfMsaFhboT8P.png","zFNBfMsaFhboT8P.png","Hat Toss.png","5b6b55b0-bdc6-47ed-9dc5-4702e953535e.png"
     ];
 
     const giftsTrack = document.getElementById("giftsTrack");
@@ -271,13 +271,13 @@
     let spinning = false;
     document.getElementById("spinButton").onclick = () => {
       if (spinning) return;
-      Telegram.WebApp.openInvoice("https://t.me/$Mat4-8TLGUmDDwAA0wpQ1SvQRDs");
+      Telegram.WebApp.openInvoice("https://t.me/$CZXsluQsmUlUEAAA3EsuOuDQN9I");
     };
 
     Telegram.WebApp.onEvent("invoiceClosed", function(event) {
       if (event.status === "paid") {
         spinning = true;
-        const prize = "nothing_drop.png";
+        const prize = "bvK9PmcyFgAh4gP.png";
         const idx = fullGifts.map((v,i)=>v===prize?i:-1).filter(i=>i!==-1)[0] + 5*gifts.length;
         const offset = idx*120 - (document.getElementById("reel").offsetWidth/2 - 60);
         gsap.to(giftsTrack, {

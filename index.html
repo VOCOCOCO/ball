@@ -95,7 +95,8 @@
       display: flex;
       gap: 12px;
       justify-content: center;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
     }
 
     .card {
@@ -154,7 +155,7 @@
       <img id="profilePic" src="https://via.placeholder.com/32" alt="Avatar">
       <span class="profile-name" id="profileName">User</span>
     </div>
-    <div class="balance" id="userBalance">★15</div>
+    <div class="balance" id="userBalance">★0</div>
   </div>
 
   <div class="container" id="mainPage">
@@ -168,10 +169,27 @@
         <img src="Pure Gold.png" alt="Free box" />
         <span>ㅤFreeㅤ</span>
       </div>
-
       <div class="card" onclick="openRoulette()">
         <img src="Hat Toss.png" alt="Case" />
         <span>ㅤ35 ★ㅤ</span>
+      </div>
+
+      <!-- Новые карточки -->
+      <div class="card" onclick="openExtraBox1()">
+        <img src="9rCyWkAz7WFyaN0.png" alt="Box 1" />
+        <span>ㅤ50 ★ㅤ</span>
+      </div>
+      <div class="card" onclick="openExtraBox2()">
+        <img src="U8z9ivaScNyJ86V.png" alt="Box 2" />
+        <span>ㅤ80 ★ㅤ</span>
+      </div>
+      <div class="card" onclick="openExtraBox3()">
+        <img src="pudbsohqxfD98gc.png" alt="Box 3" />
+        <span>ㅤ300 ★ㅤ</span>
+      </div>
+      <div class="card" onclick="openExtraBox4()">
+        <img src="Puss in Boots.png" alt="Box 4" />
+        <span>ㅤ450 ★ㅤ</span>
       </div>
     </div>
   </div>
@@ -180,31 +198,53 @@
 
   <script>
     function openRoulette() {
-      history.pushState({ page: "roulette" }, "", "#roulette");
-      document.getElementById("mainPage").style.display = "none";
       const iframe = document.getElementById("rouletteFrame");
       iframe.src = "roulette.html";
       iframe.style.display = "block";
+      document.getElementById("mainPage").style.display = "none";
+      history.pushState({ screen: "roulette" }, "", "#roulette");
     }
 
     function openFreeBox() {
-      history.pushState({ page: "freebox" }, "", "#freebox");
-      document.getElementById("mainPage").style.display = "none";
       const iframe = document.getElementById("rouletteFrame");
       iframe.src = "roulette1.html";
       iframe.style.display = "block";
+      document.getElementById("mainPage").style.display = "none";
+      history.pushState({ screen: "freebox" }, "", "#freebox");
+    }
+
+    // Новые обработчики
+    function openExtraBox1() {
+      openBoxWithSrc("roulette2.html", "box1");
+    }
+
+    function openExtraBox2() {
+      openBoxWithSrc("roulette3.html", "box2");
+    }
+
+    function openExtraBox3() {
+      openBoxWithSrc("roulette4.html", "box3");
+    }
+
+    function openExtraBox4() {
+      openBoxWithSrc("box4.html", "box4");
+    }
+
+    function openBoxWithSrc(src, hash) {
+      const iframe = document.getElementById("rouletteFrame");
+      iframe.src = src;
+      iframe.style.display = "block";
+      document.getElementById("mainPage").style.display = "none";
+      history.pushState({ screen: hash }, "", `#${hash}`);
     }
 
     window.addEventListener("popstate", () => {
-      if (location.hash !== "#roulette" && location.hash !== "#freebox") {
-        const iframe = document.getElementById("rouletteFrame");
-        iframe.style.display = "none";
-        iframe.src = "";
-        document.getElementById("mainPage").style.display = "block";
-      }
+      const iframe = document.getElementById("rouletteFrame");
+      iframe.style.display = "none";
+      iframe.src = "";
+      document.getElementById("mainPage").style.display = "block";
     });
 
-    // Telegram WebApp инициализация профиля
     function updateProfile() {
       if (window.Telegram && Telegram.WebApp) {
         let user = Telegram.WebApp.initDataUnsafe?.user;
@@ -220,21 +260,6 @@
     window.addEventListener("DOMContentLoaded", () => {
       updateProfile();
     });
-    
-      function openRoulette() {
-        const iframe = document.getElementById("rouletteFrame");
-        iframe.src = "roulette.html";
-        iframe.style.display = "block";
-        document.getElementById("mainPage").style.display = "none";
-        history.pushState({ screen: "roulette" }, "", "#roulette");
-      }
-      window.addEventListener("popstate", () => {
-        const iframe = document.getElementById("rouletteFrame");
-        iframe.style.display = "none";
-        iframe.src = "";
-        document.getElementById("mainPage").style.display = "block";
-      });            
-    
   </script>
-  </body>
-  </html>
+</body>
+</html>

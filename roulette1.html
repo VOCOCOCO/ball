@@ -227,7 +227,6 @@
 <body>
     <div class="container">
         <div class="reel" id="reel">
-          <div class="close-button" id="closeBtn">✖</div> <!-- Крестик закрытия -->
           <div class="pointer-line"></div>
           <div class="gifts-wrapper" id="giftsTrack"></div>
         </div>
@@ -321,9 +320,15 @@
 
     document.body.addEventListener("click", (e) => {
         if (e.target.id === "closeBtn") {
-          window.location.href = "index.html";
+        window.location.href = "index.html";
+
         }
-      });      
+      });     
+      
+      // Сообщаем родителю, что рулетка успешно сыграна
+    window.parent.postMessage({ type: 'roulette_won', stars: 10 }, '*');
+
+
   </script>
   
 </body>
