@@ -217,29 +217,21 @@
       }
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      updateProfile();
-
-      if (location.hash === "#roulette") {
-        document.getElementById("mainPage").style.display = "none";
-        const iframe = document.getElementById("rouletteFrame");
-        iframe.src = "roulette.html";
-        iframe.style.display = "block";
-      } else if (location.hash === "#freebox") {
-        document.getElementById("mainPage").style.display = "none";
-        const iframe = document.getElementById("rouletteFrame");
-        iframe.src = "Roulette1.html";
-        iframe.style.display = "block";
-      }
-    });
-
+       
+</script>
+<script>
+    // Обработка postMessage от iframe
     window.addEventListener("message", (event) => {
-        if (event.data.action === "goBack") {
-        history.back();
+      if (event.data && event.data.action === "goBack") {
+        // Возвращаемся на главный экран
+        const iframe = document.getElementById("rouletteFrame");
+        iframe.style.display = "none";
+        iframe.src = "";
+        document.getElementById("mainPage").style.display = "block";
+        history.pushState({}, "", " "); // Убираем #хеш
       }
     });
-          
   </script>
+  
 </body>
 </html>
-
