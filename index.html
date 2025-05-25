@@ -151,7 +151,7 @@
 
   <div class="header">
     <div class="profile">
-      <img id="profilePic" src="9344418.png" alt="Avatar">
+      <img id="profilePic" src="https://via.placeholder.com/32" alt="Avatar">
       <span class="profile-name" id="profileName">User</span>
     </div>
     <div class="balance" id="userBalance">★15</div>
@@ -216,18 +216,23 @@
         }
       }
     }
-// Обработка postMessage от iframe
-window.addEventListener("message", (event) => {
-    if (event.data && event.data.action === "goBack") {
-      // Возвращаемся на главный экран
-      const iframe = document.getElementById("rouletteFrame");
-      iframe.style.display = "none";
-      iframe.src = "";
-      document.getElementById("mainPage").style.display = "block";
-      history.pushState({}, "", " "); // Убираем #хеш
-    }
-  });
-       
-</script>
+
+    window.addEventListener("DOMContentLoaded", () => {
+      updateProfile();
+
+      if (location.hash === "#roulette") {
+        document.getElementById("mainPage").style.display = "none";
+        const iframe = document.getElementById("rouletteFrame");
+        iframe.src = "roulette.html";
+        iframe.style.display = "block";
+      } else if (location.hash === "#freebox") {
+        document.getElementById("mainPage").style.display = "none";
+        const iframe = document.getElementById("rouletteFrame");
+        iframe.src = "Roulette1.html";
+        iframe.style.display = "block";
+      }
+    });
+  </script>
 </body>
 </html>
+
