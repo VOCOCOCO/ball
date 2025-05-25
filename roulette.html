@@ -303,17 +303,30 @@
     });
       
     
-    Telegram.WebApp.ready(); // Обязательно
+    
 
-    // Показываем кнопку назад
-    Telegram.WebApp.BackButton.show();
-  
-    // Устанавливаем обработчик нажатия
-    Telegram.WebApp.BackButton.onClick(() => {
-      window.history.back(); // Или window.location.href = "index.html";
+  </script>
+  <script>
+    const backButton = Telegram.WebApp.BackButton;
+
+    // Показывать кнопку только если есть GET параметры 
+// Показывать кнопку только если есть параметры 
+// и страница не главная
+if (window.location.search && window.location.pathname !== '/') {
+
+  backButton.show();
+
+} else {
+
+  backButton.hide(); 
+
+}
+backButton.onClick(() => {
+      history.back();
     });
 
   </script>
 </body>
 </html>
+    
     
