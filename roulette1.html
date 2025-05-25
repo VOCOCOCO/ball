@@ -299,29 +299,16 @@
       dragFree: true
     });
 
-  </script>
-  <script type="module">
-    import { backButton } from 'https://cdn.jsdelivr.net/npm/@telegram-apps/sdk/dist/index.mjs';
+    Telegram.WebApp.ready(); // Обязательно
+
+    // Показываем кнопку назад
+    Telegram.WebApp.BackButton.show();
   
-    // Готовим WebApp
-    Telegram.WebApp.ready();
-  
-    // Монтируем backButton
-    if (backButton.mount.isAvailable()) {
-      backButton.mount();
-    }
-  
-    // Показываем кнопку
-    if (backButton.show.isAvailable()) {
-      backButton.show();
-    }
-  
-    // Обработка нажатия назад
-    if (backButton.onClick.isAvailable()) {
-      backButton.onClick(() => {
-        window.history.back(); // Возвращаемся назад
-      });
-    }
+    // Устанавливаем обработчик нажатия
+    Telegram.WebApp.BackButton.onClick(() => {
+      window.history.back(); // Или window.location.href = "index.html";
+    });
+
   </script>
   
 </body>
