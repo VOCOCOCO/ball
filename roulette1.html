@@ -52,6 +52,24 @@
       backdrop-filter: blur(6px);
       margin-bottom: 25px;
     }
+    .close-button {
+        position: absolute;
+        top: 10px;
+        left: 10px;  /* вместо right: 8px */
+        font-size: 18px;
+        font-weight: bold;
+        color: #ccc;
+        cursor: pointer;
+        user-select: none;
+        z-index: 20;
+        padding: 2px 6px;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      .close-button:hover {
+        background-color: rgba(255,255,255,0.15);
+        color: white;
+      }
     .gifts-wrapper {
       display: flex;
       height: 100%;
@@ -209,6 +227,7 @@
 <body>
     <div class="container">
         <div class="reel" id="reel">
+          <div class="close-button" id="closeBtn">✖</div> <!-- Крестик закрытия -->
           <div class="pointer-line"></div>
           <div class="gifts-wrapper" id="giftsTrack"></div>
         </div>
@@ -299,16 +318,12 @@
       dragFree: true
     });
 
-    Telegram.WebApp.ready(); // Обязательно
 
-    // Показываем кнопку назад
-    Telegram.WebApp.BackButton.show();
-  
-    // Устанавливаем обработчик нажатия
-    Telegram.WebApp.BackButton.onClick(() => {
-      window.history.back(); // Или window.location.href = "index.html";
-    });
-
+    document.body.addEventListener("click", (e) => {
+        if (e.target.id === "closeBtn") {
+          window.history.back();
+        }
+      });      
   </script>
   
 </body>
