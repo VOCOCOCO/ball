@@ -304,13 +304,13 @@
 
     
     Telegram.WebApp.ready();
-      
-    Telegram.WebApp.BackButton.show();
-    Telegram.WebApp.MainButton.hide();
-      
-    Telegram.WebApp.BackButton.onClick(() => {
-        window.parent.postMessage({ action: "goBack" }, "*");
-      });
+Telegram.WebApp.BackButton.show();
+Telegram.WebApp.MainButton.hide();
+
+Telegram.WebApp.BackButton.onClick(() => {
+  window.parent.postMessage({ action: "goBack" }, "*");
+});
+
       
   </script>
 </body>
