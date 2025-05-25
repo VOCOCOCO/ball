@@ -63,6 +63,26 @@
       margin-bottom: 25px;
     }
 
+    .close-button {
+        position: absolute;
+        top: 10px;
+        left: 10px;  /* вместо right: 8px */
+        font-size: 18px;
+        font-weight: bold;
+        color: #ccc;
+        cursor: pointer;
+        user-select: none;
+        z-index: 20;
+        padding: 2px 6px;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+      }
+      .close-button:hover {
+        background-color: rgba(255,255,255,0.15);
+        color: white;
+      }
+      
+
     .gifts-wrapper {
       display: flex;
       height: 100%;
@@ -135,9 +155,6 @@
       border-color: white;
     }
     
-    
-    
-
     .modal {
       position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh;
@@ -210,6 +227,7 @@
 <body>
   <div class="container">
     <div class="reel" id="reel">
+      <div class="close-button" id="closeBtn">✖</div> <!-- Крестик закрытия -->
       <div class="pointer-line"></div>
       <div class="gifts-wrapper" id="giftsTrack"></div>
     </div>
@@ -299,34 +317,16 @@
     EmblaCarousel(document.getElementById("embla"), {
       loop: false,
       align: "start",
-      dragFree: true
+      dragFree:
+      true,
     });
+    document.body.addEventListener("click", (e) => {
+        if (e.target.id === "closeBtn") {
+          window.history.back();
+        }
+      });
       
-    
-    
-
-  </script>
-  <script>
-    const backButton = Telegram.WebApp.BackButton;
-
-    // Показывать кнопку только если есть GET параметры 
-// Показывать кнопку только если есть параметры 
-// и страница не главная
-if (window.location.search && window.location.pathname !== '/') {
-
-  backButton.show();
-
-} else {
-
-  backButton.hide(); 
-
-}
-backButton.onClick(() => {
-      history.back();
-    });
-
-  </script>
-</body>
-</html>
-    
+</script> 
+</body> 
+</html>  
     
